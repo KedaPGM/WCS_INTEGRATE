@@ -85,7 +85,7 @@ namespace resource.module.modulesql
         #region[添加]
 
 
-        internal bool AddArea(Area area)
+        public bool AddArea(Area area)
         {
             string str = "INSERT INTO `area`(`name`, `enable`, `devautorun`, `memo`) VALUES('{0}', {1}, {2}, '{3}')";
             string sql = string.Format(@str, area.name, area.enable, area.devautorun, area.memo);

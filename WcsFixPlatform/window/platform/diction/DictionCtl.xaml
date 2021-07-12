@@ -53,6 +53,10 @@
                         Tag="EditDicDtl" Command="{Binding DictionDtlEditeCmd}" CommandParameter="{Binding Tag,RelativeSource={RelativeSource Self}}"/>
                 <Button Content="删除值" Margin="5" IsEnabled="{Binding ISDELETEENABLE}" Style="{StaticResource ButtonDanger}" hc:IconElement.Geometry="{StaticResource DeleteGeometry}" 
                         Tag ="DeleteDicDtl" Command="{Binding DictionDtlEditeCmd}" CommandParameter="{Binding Tag,RelativeSource={RelativeSource Self}}"/>
+                <!--<Button Content="导入配置" Margin="5" Style="{StaticResource ButtonDanger}" hc:IconElement.Geometry="{StaticResource DeleteGeometry}" 
+                        Tag ="ImportConfig" Command="{Binding ConfigEditCmd}" CommandParameter="{Binding Tag,RelativeSource={RelativeSource Self}}"/>
+                <Button Content="导出配置" Margin="5" Style="{StaticResource ButtonDanger}" hc:IconElement.Geometry="{StaticResource DeleteGeometry}" 
+                        Tag ="ExportConfig" Command="{Binding ConfigEditCmd}" CommandParameter="{Binding Tag,RelativeSource={RelativeSource Self}}"/>-->
             </StackPanel>
             <DataGrid Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" FontSize="20" RowHeaderWidth="60"  hc:DataGridAttach.ShowRowNumber="True"
                       SelectedItem="{Binding DictionDtlSelected}" ItemsSource="{Binding DictionDtlList}"

@@ -1,14 +1,16 @@
 ﻿using enums;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using HandyControl.Controls;
 using HandyControl.Tools.Extension;
+using Microsoft.Win32;
+using module.area;
 using module.diction;
 using module.window;
 using resource;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using wcs.Dialog;
 
 namespace wcs.ViewModel
@@ -127,6 +129,8 @@ namespace wcs.ViewModel
         public RelayCommand DictionSelectedChangeCmd => new Lazy<RelayCommand>(() => new RelayCommand(DictionSelectedChange)).Value;
         public RelayCommand DictionDtlSelectedChangeCmd => new Lazy<RelayCommand>(() => new RelayCommand(DictionDtlSelectedChange)).Value;
 
+        public RelayCommand<string> ConfigEditCmd => new Lazy<RelayCommand<string>>(() => new RelayCommand<string>(ConfigEdit)).Value;
+
         #endregion
 
         #region[方法]
@@ -243,6 +247,65 @@ namespace wcs.ViewModel
                     PubMaster.Goods.DelectOverLimitGoods();
                 }
                 ItemRefresh(true);
+            }
+        }
+
+        private async void ConfigEdit(string tag)
+        {
+            switch (tag)
+            {
+                case "ImportConfig":
+                    DataTable _Data;
+                    //打开文件对话框
+                    System.Windows.Forms.OpenFileDialog fd = new System.Windows.Forms.OpenFileDialog
+                    {
+                        //过滤exl文件
+                        Filter = @"Excel文件 (*.xls; *.xlsx)|*.xls; *.xlsx|All Files (*.*)|*.*"
+                    };
+
+                    if (fd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        string fileName = fd.FileName;//文件名
+                        try
+                        {
+                            // Excel --> DataTable
+                            _Data = new DataTable();
+                            List<Area> al = PubMaster.Mod.ExcelConfigSql.GetExcelData<Area>(fileName);
+                            foreach (Area area in al)
+                            {
+                                PubMaster.Mod.AreaSql.AddArea(area);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Growl.Warning("导入失败!");
+                            return;
+                        }
+                    }
+                    break;
+                case "ExportConfig":
+
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "Excel files (*.xls)|*.xls";
+                    saveFileDialog.FilterIndex = 0;
+                    saveFileDialog.RestoreDirectory = true;
+                    saveFileDialog.CreatePrompt = true;
+                    saveFileDialog.Title = "导出Excel文件到";
+
+                    DateTime now = DateTime.Now;
+                    saveFileDialog.FileName = now.Year.ToString().PadLeft(2)
+                    + now.Month.ToString().PadLeft(2, '0')
+                    + now.Day.ToString().PadLeft(2, '0') + "-"
+                    + now.Hour.ToString().PadLeft(2, '0')
+                    + now.Minute.ToString().PadLeft(2, '0')
+                    + now.Second.ToString().PadLeft(2, '0');
+                    saveFileDialog.ShowDialog();
+
+                    PubMaster.Mod.ExcelConfigSql.SaveToExcel(saveFileDialog);
+
+                    break;
+                default:
+                    break;
             }
         }
 
